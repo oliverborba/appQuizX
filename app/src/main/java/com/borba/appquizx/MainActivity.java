@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -86,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         if (btnText.equals(respostaCorreta)) {
             alertTitle = "Correto!!! :)";
             respostaCorretaContador++;
-        }
-        else {
+        } else {
             alertTitle = "Você errou :(";
         }
 
@@ -100,18 +100,41 @@ public class MainActivity extends AppCompatActivity {
                 if (quizCount != QUIZCOUNT) {
                     quizCount++;
                     showNextQuiz();
-                } //else {
-                //resFinal();
-                //}
+                } else {
+                    resFinal();
+                }
             }
         });
         builder.setCancelable(false);
         builder.setNegativeButton("DESISTIR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //resFinal();
+                resFinal();
             }
         });
+        builder.show();
+    }
+
+    public void resFinal() {
+        String finalScore;
+        if (respostaCorretaContador == QUIZCOUNT) {
+            finalScore = "Você acertou todas parabens !!!";
+        } else {
+            finalScore = "Você não acertou todas";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("RESULTADO FINAL");
+        builder.setMessage(finalScore + "\nPontuação" + respostaCorretaContador);
+        builder.setNeutralButton("RECOMEÇAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent restartIntent = getBaseContext().getPackageManager()
+                        .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                restartIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(restartIntent);
+            }
+        });
+        builder.setCancelable(false);
         builder.show();
     }
 }
